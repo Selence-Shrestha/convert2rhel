@@ -1,5 +1,5 @@
 #!/bin/bash
-
+#
 # Initialize overall pass flag
 all_checks_passed=true
 
