@@ -59,8 +59,12 @@ secure_boot=$(mokutil --sb-state 2>/dev/null | grep -c 'SecureBoot enabled')
 check_result "Secure Boot Disabled" "[ $secure_boot -eq 0 ]"
 
 # 8. Check if system updates are performed
-updates_needed=$(yum check-update 2>/dev/null | wc -l)
-check_result "Update Performed" "[ $updates_needed -eq 0 ]"
+if yum check-update &>/dev/null; then
+  updates_needed=false
+else
+  updates_needed=true
+fi
+check_result "Update Performed" "[ $updates_needed = false ]"
 
 # 9. Check Configuration Management Software (e.g., Ansible, Puppet, Chef)
 config_mgmt_installed=$(rpm -qa | grep -E 'ansible|puppet|chef-server-core' | wc -l)
@@ -87,3 +91,4 @@ else
   echo -e "\nOverall System Checks: \e[31mFAIL\e[0m"
   exit 1
 fi
+
